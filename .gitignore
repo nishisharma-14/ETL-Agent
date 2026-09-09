@@ -1,0 +1,198 @@
+﻿# ============================================================
+# .gitignore — Automated ETL / Data Pipeline Project
+# Python | PostgreSQL | FastAPI | Docker | Windows | VS Code
+# ============================================================
+
+
+# ============================================================
+# PYTHON
+# ============================================================
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env_folder/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/
+nosetests.xml
+test-results/
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# pyright
+pyrightconfig.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version
+
+
+# ============================================================
+# SECRETS & ENVIRONMENT VARIABLES
+# ============================================================
+
+# NEVER commit credentials, passwords, or API keys
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+
+# Secrets folder (if you use one)
+secrets/
+credentials/
+
+
+# ============================================================
+# DATABASE
+# ============================================================
+
+# SQLite databases (if used for testing)
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL dumps / backups
+*.dump
+*.bak
+pg_dump/
+backups/
+
+
+# ============================================================
+# LOGS
+# ============================================================
+
+# Application logs
+logs/
+*.log
+*.log.*
+log/
+
+# Pipeline run outputs
+output/
+outputs/
+run_logs/
+
+
+# ============================================================
+# DOCKER
+# ============================================================
+
+# Docker local override files
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Docker mounted volume data (regeneratable)
+postgres_data/
+pgdata/
+data/
+
+
+# ============================================================
+# DATA FILES (raw/intermediate — regeneratable)
+# ============================================================
+
+*.csv
+*.jsonl
+*.parquet
+*.xlsx
+*.xls
+*.tsv
+
+
+# ============================================================
+# VS CODE
+# ============================================================
+
+.vscode/
+
+
+# ============================================================
+# WINDOWS OS FILES
+# ============================================================
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+
+# ============================================================
+# MACOS (for cross-platform collaboration)
+# ============================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+
+# ============================================================
+# TEMPORARY / MISC FILES
+# ============================================================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Compiled C extensions
+*.so
+*.pyd
+
+# Rope (Python refactoring)
+.ropeproject/
+
+# Pyre type checker
+.pyre/
