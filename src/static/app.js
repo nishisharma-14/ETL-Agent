@@ -1,5 +1,5 @@
 // High-density Industrial Console Client
-// Zero emojis, strict data state management
+// Dynamic API Ingestion & Real-Time Sync Engine
 
 let allProducts = [];
 let filteredProducts = [];
@@ -22,6 +22,14 @@ const triggerBtn = document.getElementById('trigger-pipeline-btn');
 const btnSpinner = document.getElementById('btn-spinner');
 const consoleStream = document.getElementById('console-stream');
 const logStatus = document.getElementById('log-status');
+const activeSourceIndicator = document.getElementById('active-source-indicator');
+
+// Dynamic Ingestion Elements
+const customApiUrlInput = document.getElementById('custom-api-url');
+const customApiAuthInput = document.getElementById('custom-api-auth');
+const ingestApiBtn = document.getElementById('ingest-api-btn');
+const ingestSpinner = document.getElementById('ingest-spinner');
+const presetPills = document.querySelectorAll('.preset-pill');
 
 // Metrics Elements
 const metricTotal = document.getElementById('metric-total');
@@ -42,7 +50,7 @@ function addLog(message, isHighlight = false) {
 async function loadProducts() {
   try {
     addLog("Querying database records from /products API...");
-    const res = await fetch('/products?limit=200');
+    const res = await fetch('/products?limit=500');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allProducts = data;
@@ -163,20 +171,62 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
-// Trigger Pipeline Run
-async function triggerPipelineRun() {
+// Ingest Custom Live API URL
+async function ingestCustomApi() {
+  const url = customApiUrlInput.value.trim();
+  const auth = customApiAuthInput.value.trim();
+
+  if (!url) {
+    addLog("Error: API URL cannot be empty.", true);
+    return;
+  }
+
+  ingestApiBtn.disabled = true;
+  ingestSpinner.style.display = 'inline-block';
+  logStatus.textContent = 'EXTRACTING LIVE API...';
+  addLog(`Requesting live endpoint: ${url}`, true);
+
+  try {
+    const res = await fetch('/pipeline/ingest-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url, auth_header: auth })
+    });
+
+    const summary = await res.json();
+    if (!res.ok) {
+      throw new Error(summary.detail || `HTTP ${res.status}`);
+    }
+
+    addLog(`Ingestion Succeeded: Extracted=${summary.total_extracted}, Transformed=${summary.total_transformed}`, true);
+    addLog(`Incremental Sync: Inserted=${summary.inserted}, Updated=${summary.updated}, Unchanged=${summary.unchanged}`, true);
+
+    activeSourceIndicator.textContent = `SOURCE: ${new URL(url).hostname.toUpperCase()}`;
+    updateMetrics(summary.total_transformed, summary.inserted, summary.updated, summary.unchanged);
+    await loadProducts();
+  } catch (err) {
+    addLog(`Dynamic ingestion failed: ${err.message}`, true);
+  } finally {
+    ingestApiBtn.disabled = false;
+    ingestSpinner.style.display = 'none';
+    logStatus.textContent = 'READY';
+  }
+}
+
+// Trigger Default Pipeline Run
+async function triggerDefaultPipeline() {
   triggerBtn.disabled = true;
   btnSpinner.style.display = 'inline-block';
-  logStatus.textContent = 'EXECUTING PIPELINE...';
-  addLog("Initiating on-demand ETL pipeline run via POST /pipeline/run...", true);
+  logStatus.textContent = 'EXECUTING ETL...';
+  addLog("Initiating default pipeline run via POST /pipeline/run...", true);
 
   try {
     const res = await fetch('/pipeline/run', { method: 'POST' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const summary = await res.json();
 
-    addLog(`Pipeline Execution Successful: Extracted=${summary.total_extracted}, Transformed=${summary.total_transformed}`, true);
-    addLog(`Incremental Load Result: Inserted=${summary.inserted}, Updated=${summary.updated}, Unchanged=${summary.unchanged}`, true);
+    addLog(`Pipeline Succeeded: Extracted=${summary.total_extracted}, Transformed=${summary.total_transformed}`, true);
+    addLog(`Incremental Load: Inserted=${summary.inserted}, Updated=${summary.updated}, Unchanged=${summary.unchanged}`, true);
 
     updateMetrics(summary.total_transformed, summary.inserted, summary.updated, summary.unchanged);
     await loadProducts();
@@ -189,10 +239,23 @@ async function triggerPipelineRun() {
   }
 }
 
+// Preset Pills click
+presetPills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    customApiUrlInput.value = pill.getAttribute('data-url');
+    addLog(`Preset selected: ${pill.textContent}`);
+  });
+});
+
 // Event Listeners
-triggerBtn.addEventListener('click', triggerPipelineRun);
+ingestApiBtn.addEventListener('click', ingestCustomApi);
+triggerBtn.addEventListener('click', triggerDefaultPipeline);
 applyFiltersBtn.addEventListener('click', applyFilters);
 resetFiltersBtn.addEventListener('click', resetFilters);
+
+customApiUrlInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') ingestCustomApi();
+});
 
 searchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') applyFilters();
@@ -213,5 +276,5 @@ nextPageBtn.addEventListener('click', () => {
   }
 });
 
-// Initial boot
+// Initial load
 loadProducts();

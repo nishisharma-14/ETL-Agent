@@ -126,14 +126,16 @@ body {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -210,6 +212,81 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 18px 20px;
+}
+
+/* API Ingestion Engine Bar */
+.api-ingest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #0D1420;
+  border: 1px solid #233550;
+}
+
+.api-ingest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.api-quick-presets {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-pill {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-pill:hover {
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+}
+
+.api-ingest-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-url-wrapper {
+  flex: 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-amber);
+  pointer-events: none;
+}
+
+.input-url {
+  padding-left: 45px !important;
+  font-family: var(--font-mono) !important;
+}
+
+.input-auth {
+  flex: 1;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
 }
 
 /* Metrics Grid */

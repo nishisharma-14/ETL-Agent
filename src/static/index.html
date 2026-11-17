@@ -23,15 +23,50 @@
           <span class="status-dot"></span>
           <span class="status-text" id="system-health">SYSTEM OPERATIONAL</span>
         </div>
-        <button id="trigger-pipeline-btn" class="btn btn-primary">
+        <button id="trigger-pipeline-btn" class="btn btn-secondary">
           <span class="btn-spinner" id="btn-spinner"></span>
-          <span class="btn-text">RUN SYNC PIPELINE</span>
+          <span class="btn-text">RUN DEFAULT ETL</span>
         </button>
       </div>
     </header>
 
     <!-- Main Workspace -->
     <main class="content">
+      <!-- Universal Live API Ingestion Bar -->
+      <section class="card api-ingest-card">
+        <div class="api-ingest-header">
+          <span class="section-title">DYNAMIC API INGESTION ENGINE</span>
+          <span class="api-quick-presets">
+            PRESETS:
+            <button class="preset-pill" data-url="https://dummyjson.com/products">DummyJSON</button>
+            <button class="preset-pill" data-url="https://fakestoreapi.com/products">FakeStore</button>
+            <button class="preset-pill" data-url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1">CoinGecko (Crypto)</button>
+          </span>
+        </div>
+        <div class="api-ingest-inputs">
+          <div class="input-url-wrapper">
+            <span class="input-prefix">GET</span>
+            <input 
+              type="url" 
+              id="custom-api-url" 
+              class="input-control input-url" 
+              placeholder="Paste any live public REST API URL here (e.g. https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd)..."
+              value="https://dummyjson.com/products"
+            />
+          </div>
+          <input 
+            type="text" 
+            id="custom-api-auth" 
+            class="input-control input-auth" 
+            placeholder="Optional Bearer Token / API Key"
+          />
+          <button id="ingest-api-btn" class="btn btn-primary">
+            <span class="btn-spinner" id="ingest-spinner"></span>
+            <span class="btn-text">FETCH & INGEST API DATA</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Metric Cards Grid -->
       <section class="metrics-grid">
         <div class="card metric-card">
@@ -70,7 +105,7 @@
       <!-- Filter Controls & Action Bar -->
       <section class="controls-bar">
         <div class="search-input-wrapper">
-          <input type="text" id="search-input" class="input-control" placeholder="Search by title, brand, or ID..." />
+          <input type="text" id="search-input" class="input-control" placeholder="Search ingested records by title, brand, or ID..." />
         </div>
 
         <div class="filters-group">
@@ -90,12 +125,12 @@
       <section class="card table-card">
         <div class="table-header-info">
           <div class="table-title-group">
-            <h2 class="section-title">Ingested Records Table</h2>
+            <h2 class="section-title">Stored Database Records</h2>
             <span class="records-count" id="records-counter">Showing 0 records</span>
           </div>
           <div class="table-meta">
-            <span>STORAGE ENGINE: SQLALCHEMY</span>
-            <span>SCHEMA: V1.0</span>
+            <span id="active-source-indicator">SOURCE: DUMMYJSON</span>
+            <span>STORAGE: SQLALCHEMY</span>
           </div>
         </div>
 
@@ -104,13 +139,13 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>TITLE</th>
+                <th>TITLE / NAME</th>
                 <th>CATEGORY</th>
-                <th>BRAND</th>
+                <th>BRAND / SOURCE</th>
                 <th class="align-right">PRICE (USD)</th>
                 <th class="align-right">RATING</th>
-                <th class="align-right">STOCK</th>
-                <th>LAST SYNC TIMESTAMP</th>
+                <th class="align-right">STOCK / VOLUME</th>
+                <th>SYNC TIMESTAMP</th>
               </tr>
             </thead>
             <tbody id="table-body">
@@ -141,7 +176,7 @@
         </div>
         <div class="console-body" id="console-stream">
           <div class="log-line log-info"><span class="log-ts">[BOOT]</span> System initialized. Database connected via SQLAlchemy ORM.</div>
-          <div class="log-line log-info"><span class="log-ts">[IDLE]</span> Pipeline ready for scheduled or on-demand execution.</div>
+          <div class="log-line log-info"><span class="log-ts">[IDLE]</span> Paste any REST API URL above to extract & incrementally load real data.</div>
         </div>
       </section>
     </main>
