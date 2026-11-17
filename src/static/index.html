@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETL Data Engine & Inventory Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-badge">PROD</span>
+        <h1 class="brand-title">ETL PIPELINE CONSOLE</h1>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-text" id="system-health">SYSTEM OPERATIONAL</span>
+        </div>
+        <button id="trigger-pipeline-btn" class="btn btn-primary">
+          <span class="btn-spinner" id="btn-spinner"></span>
+          <span class="btn-text">RUN SYNC PIPELINE</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="content">
+      <!-- Metric Cards Grid -->
+      <section class="metrics-grid">
+        <div class="card metric-card">
+          <span class="metric-label">TOTAL EXTRACTED RECORDS</span>
+          <div class="metric-value-row">
+            <span class="metric-number" id="metric-total">194</span>
+            <span class="metric-sub">PAGINATED & VERIFIED</span>
+          </div>
+        </div>
+
+        <div class="card metric-card">
+          <span class="metric-label">LAST INSERTED (NEW)</span>
+          <div class="metric-value-row">
+            <span class="metric-number" id="metric-inserted">0</span>
+            <span class="metric-sub">PRIMARY KEY REGISTERED</span>
+          </div>
+        </div>
+
+        <div class="card metric-card">
+          <span class="metric-label">LAST UPDATED (CHANGED)</span>
+          <div class="metric-value-row">
+            <span class="metric-number" id="metric-updated">0</span>
+            <span class="metric-sub">DELTA DETECTED</span>
+          </div>
+        </div>
+
+        <div class="card metric-card">
+          <span class="metric-label">UNCHANGED (IDENTICAL)</span>
+          <div class="metric-value-row">
+            <span class="metric-number" id="metric-unchanged">194</span>
+            <span class="metric-sub">SKIPPED ON UPSERT</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter Controls & Action Bar -->
+      <section class="controls-bar">
+        <div class="search-input-wrapper">
+          <input type="text" id="search-input" class="input-control" placeholder="Search by title, brand, or ID..." />
+        </div>
+
+        <div class="filters-group">
+          <select id="category-filter" class="select-control">
+            <option value="">All Categories</option>
+          </select>
+
+          <input type="number" id="min-price-filter" class="input-control input-sm" placeholder="Min Price" min="0" />
+          <input type="number" id="max-price-filter" class="input-control input-sm" placeholder="Max Price" min="0" />
+
+          <button id="apply-filters-btn" class="btn btn-secondary">FILTER</button>
+          <button id="reset-filters-btn" class="btn btn-ghost">RESET</button>
+        </div>
+      </section>
+
+      <!-- Data Table Card -->
+      <section class="card table-card">
+        <div class="table-header-info">
+          <div class="table-title-group">
+            <h2 class="section-title">Ingested Records Table</h2>
+            <span class="records-count" id="records-counter">Showing 0 records</span>
+          </div>
+          <div class="table-meta">
+            <span>STORAGE ENGINE: SQLALCHEMY</span>
+            <span>SCHEMA: V1.0</span>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>TITLE</th>
+                <th>CATEGORY</th>
+                <th>BRAND</th>
+                <th class="align-right">PRICE (USD)</th>
+                <th class="align-right">RATING</th>
+                <th class="align-right">STOCK</th>
+                <th>LAST SYNC TIMESTAMP</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="8" class="empty-state">Loading stored pipeline records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div class="table-footer">
+          <div class="pagination-info">
+            <span id="page-indicator">Page 1</span>
+          </div>
+          <div class="pagination-actions">
+            <button id="prev-page-btn" class="btn btn-sm btn-ghost" disabled>PREVIOUS</button>
+            <button id="next-page-btn" class="btn btn-sm btn-ghost">NEXT</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Terminal / Execution Log Feed -->
+      <section class="card console-card">
+        <div class="console-header">
+          <span class="console-title">AUDIT LOG / RUN TELEMETRY</span>
+          <span class="console-status" id="log-status">READY</span>
+        </div>
+        <div class="console-body" id="console-stream">
+          <div class="log-line log-info"><span class="log-ts">[BOOT]</span> System initialized. Database connected via SQLAlchemy ORM.</div>
+          <div class="log-line log-info"><span class="log-ts">[IDLE]</span> Pipeline ready for scheduled or on-demand execution.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
